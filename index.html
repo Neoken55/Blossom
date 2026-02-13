@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You 🌸</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #fff0f3; }
+        
+        #ui {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            color: #ff4d6d;
+            pointer-events: none;
+            letter-spacing: 1px;
+            transition: opacity 1s;
+        }
+
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: #c9184a;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2);
+            opacity: 0; /* Hidden initially */
+            pointer-events: none;
+            transition: opacity 2s ease-in-out;
+            border: 2px solid #ffb3c1;
+        }
+    </style>
+</head>
+<body>
+    <div id="ui">Tap to grow our garden 🌸</div>
+    <div id="message">
+        Even though we are miles apart, every flower I plant here represents a memory of us. You make my world bloom. I love you so much!
+    </div>
+
+    <script>
+        let flowers = [];
+        let clickCount = 0;
+        const revealThreshold = 12; // Message appears after 12 flowers
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            angleMode(DEGREES);
+        }
+
+        function draw() {
+            background('#fff0f3'); 
+            for (let f of flowers) {
+                f.display();
+                f.grow();
+            }
+        }
+
+        function mousePressed() {
+            flowers.push(new Flower(mouseX, mouseY));
+            clickCount++;
+
+            // Handle UI and Message reveal
+            if (clickCount === 1) {
+                document.getElementById('ui').style.opacity = '0.5';
+            }
+            if (clickCount >= revealThreshold) {
+                document.getElementById('message').style.opacity = '1';
+                document.getElementById('ui').style.display = 'none';
+            }
+        }
+
+        class Flower {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = 0;
+                this.maxSize = random(45, 85);
+                this.petalCount = floor(random(6, 9));
+                // Variations of pink and soft red
+                this.color = color(255, random(100, 180), random(150, 200), 220);
+                this.centerColor = color(255, 230, 100);
+            }
+
+            grow() {
+                if (this.size < this.maxSize) {
+                    this.size += 3; // Fast growth for responsiveness
+                }
+            }
+
+            display() {
+                push();
+                translate(this.x, this.y);
+                fill(this.color);
+                noStroke();
+                
+                for (let i = 0; i < this.petalCount; i++) {
+                    rotate(360 / this.petalCount);
+                    ellipse(this.size / 2.5, 0, this.size, this.size / 2);
+                }
+                
+                fill(this.centerColor);
+                circle(0, 0, this.size / 3);
+                pop();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</body>
+</html>
